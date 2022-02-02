@@ -58,7 +58,7 @@ class _TopPageState extends State<TopPage> {
                   alignment: Alignment.center,
                   height: 50,
                   color: Colors.redAccent,
-                  child: Text(
+                  child: const Text(
                       '未完了タスク',
                       style: TextStyle(color: Colors.white, fontSize: 20),    // TextStyleの設定
                   ),
@@ -69,7 +69,7 @@ class _TopPageState extends State<TopPage> {
                   alignment: Alignment.center,
                   height: 50,
                   color: Colors.greenAccent,
-                  child: Text(
+                  child: const Text(
                     '未完了タスク',
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
