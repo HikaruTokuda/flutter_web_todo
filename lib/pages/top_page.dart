@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web/models/task.dart';
+import 'package:flutter_web/pages/add_task_page.dart';
 import 'package:flutter_web/pages/done_task_page.dart';
 import 'package:flutter_web/pages/undone_task_page.dart';
 
@@ -84,7 +85,9 @@ class _TopPageState extends State<TopPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddTaskPage()));
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
