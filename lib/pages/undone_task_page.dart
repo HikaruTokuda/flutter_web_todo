@@ -21,7 +21,8 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
             title: Text(widget.undoneTaskList![index].title!),
             value: widget.undoneTaskList![index].isDone,
             onChanged: (bool? value) {
-              widget.undoneTaskList![index].isDone = !widget.undoneTaskList![index].isDone!;
+              widget.undoneTaskList![index].isDone = value;
+              widget.doneTaskList?.add(widget.undoneTaskList![index]);
               widget.undoneTaskList!.removeAt(index);
               setState(() {});
             },

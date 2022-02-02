@@ -22,7 +22,8 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
             title: Text(widget.doneTaskList![index].title!),
             value: widget.doneTaskList![index].isDone,
             onChanged: (bool? value) {
-              widget.doneTaskList![index].isDone = !widget.doneTaskList![index].isDone!;
+              widget.doneTaskList![index].isDone = value;
+              widget.undoneTaskList?.add(widget.doneTaskList![index]);
               widget.doneTaskList!.removeAt(index);
               setState(() {});
             },
