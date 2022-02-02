@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web/models/task.dart';
+import 'package:flutter_web/pages/done_task_page.dart';
+import 'package:flutter_web/pages/undone_task_page.dart';
 
 class TopPage extends StatefulWidget {
   TopPage({Key? key, required this.title}) : super(key: key);
@@ -26,6 +28,8 @@ class _TopPageState extends State<TopPage> {
     )
   ];
 
+  bool showUndoneTaskPage = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,42 +40,55 @@ class _TopPageState extends State<TopPage> {
       body: Stack(            // Stack: 複数のWidgetを重ねて表示する
         alignment: Alignment.bottomCenter,    // childrenのWedigetを下詰め中央寄せで表示
         children: [
-          ListView.builder(
-              itemCount: taskList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return CheckboxListTile(
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: Text(taskList[index].title!),
-                  value: taskList[index].isDone,
-                  onChanged: (bool? value) {
-                    taskList[index].isDone = !taskList[index].isDone!;
-                    taskList.removeAt(index);
-                    setState(() {});
-                  },
-                );
-              }
-          ),
+          showUndoneTaskPage ? UndoneTaskPage() : DoneTaskPage(),
+          // ListView.builder(
+          //     itemCount: taskList.length,
+          //     itemBuilder: (BuildContext context, int index) {
+          //       return CheckboxListTile(
+          //         controlAffinity: ListTileControlAffinity.leading,
+          //         title: Text(taskList[index].title!),
+          //         value: taskList[index].isDone,
+          //         onChanged: (bool? value) {
+          //           taskList[index].isDone = !taskList[index].isDone!;
+          //           taskList.removeAt(index);
+          //           setState(() {});
+          //         },
+          //       );
+          //     }
+          // ),
           Row(      // Row: 複数のWidgetを横に並べる
             children: [
               Expanded(     // childのWidgetを画面いっぱいに広げる
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 50,
-                  color: Colors.redAccent,
-                  child: const Text(
-                      '未完了タスク',
-                      style: TextStyle(color: Colors.white, fontSize: 20),    // TextStyleの設定
+                child: InkWell(     // childのWidgetをタップ可能にする
+                  onTap: () => {
+                    showUndoneTaskPage = true,
+                    setState(() => {}),
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    color: Colors.redAccent,
+                    child: const Text(
+                        '未完了タスク',
+                        style: TextStyle(color: Colors.white, fontSize: 20),    // TextStyleの設定
+                    ),
                   ),
                 ),
               ),
               Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 50,
-                  color: Colors.greenAccent,
-                  child: const Text(
-                    '未完了タスク',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                child: InkWell(
+                  onTap: () => {
+                    showUndoneTaskPage = false,
+                    setState(() => {}),
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    color: Colors.greenAccent,
+                    child: const Text(
+                      '完了タスク',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
                   ),
                 ),
               )
