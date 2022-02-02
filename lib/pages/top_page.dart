@@ -19,6 +19,10 @@ class _TopPageState extends State<TopPage> {
     Task(title: "買い出し",
         isDone: false,
         createdTime: DateTime.now()
+    ),
+    Task(title: "買い出し",
+        isDone: false,
+        createdTime: DateTime.now()
     )
   ];
 
@@ -29,20 +33,51 @@ class _TopPageState extends State<TopPage> {
         backgroundColor: Colors.green,
         title: Text('Firebase * Flutter for Web'),
       ),
-      body: ListView.builder(
-          itemCount: taskList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              title: Text(taskList[index].title!),
-              value: taskList[index].isDone,
-              onChanged: (bool? value) {
-                taskList[index].isDone = !taskList[index].isDone!;
-                taskList.removeAt(index);
-                setState(() {});
-              },
-            );
-          }
+      body: Stack(            // Stack: 複数のWidgetを重ねて表示する
+        alignment: Alignment.bottomCenter,    // childrenのWedigetを下詰め中央寄せで表示
+        children: [
+          ListView.builder(
+              itemCount: taskList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text(taskList[index].title!),
+                  value: taskList[index].isDone,
+                  onChanged: (bool? value) {
+                    taskList[index].isDone = !taskList[index].isDone!;
+                    taskList.removeAt(index);
+                    setState(() {});
+                  },
+                );
+              }
+          ),
+          Row(      // Row: 複数のWidgetを横に並べる
+            children: [
+              Expanded(     // childのWidgetを画面いっぱいに広げる
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 50,
+                  color: Colors.redAccent,
+                  child: Text(
+                      '未完了タスク',
+                      style: TextStyle(color: Colors.white, fontSize: 20),    // TextStyleの設定
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 50,
+                  color: Colors.greenAccent,
+                  child: Text(
+                    '未完了タスク',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              )
+            ],
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){},
