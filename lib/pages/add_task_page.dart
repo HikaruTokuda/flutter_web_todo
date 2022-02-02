@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web/models/task.dart';
 
 class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({Key? key}) : super(key: key);
+  final List<Task>? undoneTaskList;
+  const AddTaskPage({this.undoneTaskList});
 
   @override
   _AddTaskPageState createState() => _AddTaskPageState();
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  TextEditingController titleController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,18 +27,27 @@ class _AddTaskPageState extends State<AddTaskPage> {
             Container(
               width: 588,
                 child: TextField(
+                  controller: titleController,      // テキストフィールドに入力された文字がここに入る
                   decoration: InputDecoration(
                     border: OutlineInputBorder()
                   ),
                 )
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20.0),
+              padding: const EdgeInsets.only(top: 50.0),
               child: Container(
-                width: 350,
+                width: 250,
                 height: 50,
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Task newTask = Task(
+                        title: titleController.text,
+                        isDone: false,
+                        createdTime: DateTime.now()
+                      );
+                      widget.undoneTaskList?.add(newTask);
+                      Navigator.pop(context);
+                    },
                     child: Text('追加')
                 ),
               ),

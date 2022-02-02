@@ -85,8 +85,9 @@ class _TopPageState extends State<TopPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddTaskPage()));
+        onPressed: () async {       // pushの並列処理を待つ
+          await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTaskPage(undoneTaskList: undoneTaskList,)));
+          setState(() {});
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
