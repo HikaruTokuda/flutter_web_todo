@@ -30,6 +30,27 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
               icon: Icon(Icons.more_horiz),
               onPressed: (){
                 // ボトムシートを表示
+                showModalBottomSheet(context: context, builder: (context) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,         // Column全体のサイズを要素ににあわせて小さくする
+                    children: [
+                      ListTile(
+                        title: Text('編集'),
+                        leading: Icon(Icons.edit),
+                        onTap: () {
+                          // 編集の処理
+                        },
+                      ),
+                      ListTile(
+                        title: Text('削除'),
+                        leading: Icon(Icons.delete),
+                        onTap: () {
+                          // 編集の処理
+                        },
+                      )
+                    ],
+                  );
+                });
               },
             ),
           );
