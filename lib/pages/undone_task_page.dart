@@ -26,6 +26,12 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
               widget.undoneTaskList!.removeAt(index);
               setState(() {});
             },
+            secondary: IconButton(
+              icon: Icon(Icons.more_horiz),
+              onPressed: (){
+                // ボトムシートを表示
+              },
+            ),
           );
         }
     );
