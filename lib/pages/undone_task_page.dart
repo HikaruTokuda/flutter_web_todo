@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web/models/task.dart';
 
@@ -12,6 +13,30 @@ class UndoneTaskPage extends StatefulWidget {
 
 class _UndoneTaskPageState extends State<UndoneTaskPage> {
   TextEditingController editTitleController = TextEditingController();
+
+  List<Task> undoneTaskList = [];
+
+  Future<void> getUndoneTasks() async {
+    var collection = Firestore.instance.collection('task');
+    var snapshot = await collection.where('is_done', isEqualTo: false).getDocuments();
+    snapshot.documents.forEach((task) {
+      Task undoneTask = Task(
+        title: task.data['title'],
+        isDone: task.data['is_done'],
+        createdTime: task.data['created_time'],
+      );
+      undoneTaskList.add(undoneTask);
+    });
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUndoneTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -67,7 +92,6 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                                         child: ElevatedButton(
                                             onPressed: (){
                                               widget.undoneTaskList?[index].title = editTitleController.text;
-                                              widget.undoneTaskList?[index].updatedTime = DateTime.now();
                                               Navigator.pop(context);
                                               setState(() {});
                                             },
