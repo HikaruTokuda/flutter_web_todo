@@ -11,6 +11,7 @@ class UndoneTaskPage extends StatefulWidget {
 }
 
 class _UndoneTaskPageState extends State<UndoneTaskPage> {
+  TextEditingController editTitleController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -52,6 +53,7 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                                     Container(
                                       width: 500,
                                       child: TextField(
+                                        controller: editTitleController,
                                         decoration: InputDecoration(
                                           border: OutlineInputBorder()
                                         ),
@@ -62,7 +64,15 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                                       child: Container(
                                         width: 200,
                                         height: 30,
-                                        child: ElevatedButton(onPressed: (){}, child: Text('編集'))
+                                        child: ElevatedButton(
+                                            onPressed: (){
+                                              widget.undoneTaskList?[index].title = editTitleController.text;
+                                              widget.undoneTaskList?[index].updatedTime = DateTime.now();
+                                              Navigator.pop(context);
+                                              setState(() {});
+                                            },
+                                            child: Text('編集')
+                                        )
                                       ),
                                     )
                                   ],
