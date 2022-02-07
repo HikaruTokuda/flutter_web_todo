@@ -67,7 +67,6 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                                           child: ElevatedButton(
                                               onPressed: (){
                                                 widget.doneTaskList?[index].title = editTitleController.text;
-                                                widget.doneTaskList?[index].updatedTime = DateTime.now();
                                                 Navigator.pop(context);
                                                 setState(() {});
                                               },

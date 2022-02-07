@@ -43,7 +43,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       Task newTask = Task(
                         title: titleController.text,
                         isDone: false,
-                        createdTime: DateTime.now()
                       );
                       widget.undoneTaskList?.add(newTask);
                       Navigator.pop(context);
