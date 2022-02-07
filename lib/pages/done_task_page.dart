@@ -1,11 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web/models/task.dart';
 
 class DoneTaskPage extends StatefulWidget {
-  final List<Task>? undoneTaskList;
-  final List<Task>? doneTaskList;
-  const DoneTaskPage({this.doneTaskList, this.undoneTaskList});
 
   @override
   _DoneTaskPageState createState() => _DoneTaskPageState();
@@ -13,19 +11,43 @@ class DoneTaskPage extends StatefulWidget {
 
 class _DoneTaskPageState extends State<DoneTaskPage> {
   TextEditingController editTitleController = TextEditingController();
+  List<Task> undoneTaskList = [];
+  List<Task> doneTaskList = [];
+
+  Future<void> getDoneTasks() async {
+    var collection = FirebaseFirestore.instance.collection('task');
+    var snapshot = await collection.where('is_done', isEqualTo: true).get();
+    snapshot.docs.forEach((task) {
+      Task doneTask = Task(
+        title: task['title'],
+        isDone: task['is_done'],
+        createdTime: task['created_time'],
+      );
+      doneTaskList.add(doneTask);
+    });
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDoneTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: widget.doneTaskList!.length,
+        itemCount: doneTaskList.length,
         itemBuilder: (BuildContext context, int index) {
           return CheckboxListTile(
             controlAffinity: ListTileControlAffinity.leading,
-            title: Text(widget.doneTaskList![index].title!),
-            value: widget.doneTaskList![index].isDone,
+            title: Text(doneTaskList[index].title!),
+            value: doneTaskList[index].isDone,
             onChanged: (bool? value) {
-              widget.doneTaskList![index].isDone = value;
-              widget.undoneTaskList?.add(widget.doneTaskList![index]);
-              widget.doneTaskList!.removeAt(index);
+              doneTaskList[index].isDone = value;
+              undoneTaskList.add(doneTaskList[index]);
+              doneTaskList.removeAt(index);
               setState(() {});
             },
             secondary: IconButton(
@@ -66,7 +88,7 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                                           height: 30,
                                           child: ElevatedButton(
                                               onPressed: (){
-                                                widget.doneTaskList?[index].title = editTitleController.text;
+                                                doneTaskList[index].title = editTitleController.text;
                                                 Navigator.pop(context);
                                                 setState(() {});
                                               },
@@ -90,11 +112,11 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                           // 確認用ダイアログの表示
                           showDialog(context: context, builder: (context) {
                             return AlertDialog(
-                              title: Text('${widget.doneTaskList?[index].title}を削除しますか？'),
+                              title: Text('${doneTaskList[index].title}を削除しますか？'),
                               actions: [    // アラートダイアログに設置するボタン
                                 TextButton(
                                     onPressed: (){
-                                      widget.doneTaskList?.removeAt(index);
+                                      doneTaskList.removeAt(index);
                                       Navigator.pop(context);
                                       setState(() {});
                                     },
