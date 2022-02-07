@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web/models/task.dart';
 
 class UndoneTaskPage extends StatefulWidget {
-  final List<Task>? undoneTaskList;
-  final List<Task>? doneTaskList;
-  const UndoneTaskPage({this.doneTaskList, this.undoneTaskList});
-
   @override
   _UndoneTaskPageState createState() => _UndoneTaskPageState();
 }
@@ -15,15 +11,17 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
   TextEditingController editTitleController = TextEditingController();
 
   List<Task> undoneTaskList = [];
+  List<Task> doneTaskList = [];
 
   Future<void> getUndoneTasks() async {
-    var collection = Firestore.instance.collection('task');
-    var snapshot = await collection.where('is_done', isEqualTo: false).getDocuments();
-    snapshot.documents.forEach((task) {
+    var collection = FirebaseFirestore.instance.collection('task');
+
+    var snapshot = await collection.where('is_done', isEqualTo: false).get();
+    snapshot.docs.forEach((task) {
       Task undoneTask = Task(
-        title: task.data['title'],
-        isDone: task.data['is_done'],
-        createdTime: task.data['created_time'],
+        title: task['title'],
+        isDone: task['is_done'],
+        createdTime: task['created_time'],
       );
       undoneTaskList.add(undoneTask);
     });
@@ -40,17 +38,13 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: widget.undoneTaskList!.length,
+        itemCount: undoneTaskList.length,
         itemBuilder: (BuildContext context, int index) {
           return CheckboxListTile(
             controlAffinity: ListTileControlAffinity.leading,
-            title: Text(widget.undoneTaskList![index].title!),
-            value: widget.undoneTaskList![index].isDone,
+            title: Text(undoneTaskList[index].title!),
+            value: undoneTaskList[index].isDone,
             onChanged: (bool? value) {
-              widget.undoneTaskList![index].isDone = value;
-              widget.doneTaskList?.add(widget.undoneTaskList![index]);
-              widget.undoneTaskList!.removeAt(index);
-              setState(() {});
             },
             secondary: IconButton(
               icon: Icon(Icons.more_horiz),
@@ -64,46 +58,6 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                         title: Text('編集'),
                         leading: Icon(Icons.edit),
                         onTap: () {
-                          // ボトムシートを非表示
-                          Navigator.pop(context);
-                          // 編集用ダイアログの表示
-                          showDialog(context: context, builder: (context) {
-                            return SimpleDialog(
-                              titlePadding: EdgeInsets.all(20),
-                              title: Container(
-                                color: Colors.white,
-                                child: Column(
-                                  children: [
-                                    Text('タイトルを編集'),
-                                    Container(
-                                      width: 500,
-                                      child: TextField(
-                                        controller: editTitleController,
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder()
-                                        ),
-                                      )
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 30.0),
-                                      child: Container(
-                                        width: 200,
-                                        height: 30,
-                                        child: ElevatedButton(
-                                            onPressed: (){
-                                              widget.undoneTaskList?[index].title = editTitleController.text;
-                                              Navigator.pop(context);
-                                              setState(() {});
-                                            },
-                                            child: Text('編集')
-                                        )
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          });
                         },
                       ),
                       ListTile(
@@ -115,13 +69,10 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                           // 確認用ダイアログの表示
                           showDialog(context: context, builder: (context) {
                             return AlertDialog(
-                              title: Text('${widget.undoneTaskList?[index].title}を削除しますか？'),
+                              title: Text('${undoneTaskList[index].title}を削除しますか？'),
                               actions: [    // アラートダイアログに設置するボタン
                                 TextButton(
                                     onPressed: (){
-                                      widget.undoneTaskList?.removeAt(index);
-                                      Navigator.pop(context);
-                                      setState(() {});
                                     },
                                     child: Text('はい')
                                 ),
