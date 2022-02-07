@@ -15,6 +15,7 @@ class TopPage extends StatefulWidget {
 
 class _TopPageState extends State<TopPage> {
   List<Task> doneTaskList = [];
+  List<Task> undoneTaskList = [];
 
   bool showUndoneTaskPage = true;
 
@@ -28,7 +29,7 @@ class _TopPageState extends State<TopPage> {
       body: Stack(            // Stack: 複数のWidgetを重ねて表示する
         alignment: Alignment.bottomCenter,    // childrenのWedigetを下詰め中央寄せで表示
         children: [
-          showUndoneTaskPage ? UndoneTaskPage(doneTaskList: doneTaskList, undoneTaskList: undoneTaskList) : DoneTaskPage(doneTaskList: doneTaskList, undoneTaskList: undoneTaskList),
+          showUndoneTaskPage ? UndoneTaskPage() : DoneTaskPage(doneTaskList: doneTaskList, undoneTaskList: undoneTaskList),
 
           Row(      // Row: 複数のWidgetを横に並べる
             children: [
