@@ -38,7 +38,38 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                         title: Text('編集'),
                         leading: Icon(Icons.edit),
                         onTap: () {
-                          // 編集の処理
+                          // ボトムシートを非表示
+                          Navigator.pop(context);
+                          // 編集用ダイアログの表示
+                          showDialog(context: context, builder: (context) {
+                            return SimpleDialog(
+                              titlePadding: EdgeInsets.all(20),
+                              title: Container(
+                                color: Colors.white,
+                                child: Column(
+                                  children: [
+                                    Text('タイトルを編集'),
+                                    Container(
+                                      width: 500,
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder()
+                                        ),
+                                      )
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 30.0),
+                                      child: Container(
+                                        width: 200,
+                                        height: 30,
+                                        child: ElevatedButton(onPressed: (){}, child: Text('編集'))
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
                         },
                       ),
                       ListTile(
