@@ -12,6 +12,7 @@ class DoneTaskPage extends StatefulWidget {
 }
 
 class _DoneTaskPageState extends State<DoneTaskPage> {
+  TextEditingController editTitleController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -52,6 +53,7 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                                     Container(
                                         width: 500,
                                         child: TextField(
+                                          controller: editTitleController,
                                           decoration: InputDecoration(
                                               border: OutlineInputBorder()
                                           ),
@@ -62,7 +64,15 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                                       child: Container(
                                           width: 200,
                                           height: 30,
-                                          child: ElevatedButton(onPressed: (){}, child: Text('編集'))
+                                          child: ElevatedButton(
+                                              onPressed: (){
+                                                widget.doneTaskList?[index].title = editTitleController.text;
+                                                widget.doneTaskList?[index].updatedTime = DateTime.now();
+                                                Navigator.pop(context);
+                                                setState(() {});
+                                              },
+                                              child: Text('編集')
+                                          )
                                       ),
                                     )
                                   ],
