@@ -86,7 +86,30 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                         title: Text('削除'),
                         leading: Icon(Icons.delete),
                         onTap: () {
-                          // 編集の処理
+                          // ボトムシートを非表示に
+                          Navigator.pop(context);
+                          // 確認用ダイアログの表示
+                          showDialog(context: context, builder: (context) {
+                            return AlertDialog(
+                              title: Text('${widget.undoneTaskList?[index].title}を削除しますか？'),
+                              actions: [    // アラートダイアログに設置するボタン
+                                TextButton(
+                                    onPressed: (){
+                                      widget.undoneTaskList?.removeAt(index);
+                                      Navigator.pop(context);
+                                      setState(() {});
+                                    },
+                                    child: Text('はい')
+                                ),
+                                TextButton(
+                                    onPressed: (){
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('キャンセル')
+                                )
+                              ],
+                            );
+                          });
                         },
                       )
                     ],
