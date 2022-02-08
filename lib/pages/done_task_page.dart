@@ -107,7 +107,9 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                                     title: Text('${snapshot.data?.docs[index]['title']}を削除しますか？'),
                                     actions: [    // アラートダイアログに設置するボタン
                                       TextButton(
-                                          onPressed: (){
+                                          onPressed: () async {
+                                            await snapshot.data?.docs[index].reference.delete();
+                                            Navigator.pop(context);
                                           },
                                           child: Text('はい')
                                       ),
