@@ -33,9 +33,13 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                   title: Text(snapshot.data?.docs[index]['title']),
                   value: snapshot.data?.docs[index]['is_done'],
                   onChanged: (bool? value) {
+                    snapshot.data?.docs[index].reference.update({
+                      'is_done': value,
+                      'updated_time': Timestamp.now()
+                    });
                   },
                   secondary: IconButton(
-                    icon: Icon(Icons.more_horiz),
+                    icon: const Icon(Icons.more_horiz),
                     onPressed: (){
                       // ボトムシートを表示
                       showModalBottomSheet(context: context, builder: (context) {
@@ -43,8 +47,8 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                           mainAxisSize: MainAxisSize.min,         // Column全体のサイズを要素ににあわせて小さくする
                           children: [
                             ListTile(
-                              title: Text('編集'),
-                              leading: Icon(Icons.edit),
+                              title: const Text('編集'),
+                              leading: const Icon(Icons.edit),
                               onTap: () {
                                 // ボトムシートを非表示
                                 Navigator.pop(context);
@@ -72,6 +76,13 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                                                 width: 200,
                                                 height: 30,
                                                 child: ElevatedButton(
+                                                    onPressed: () async {
+                                                      await snapshot.data?.docs[index].reference.update(
+                                                          {
+                                                            'title': editTitleController.text
+                                                          });
+                                                      Navigator.pop(context);
+                                                    },
                                                     child: const Text('編集')
                                                 )
                                             ),
@@ -84,7 +95,7 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                               },
                             ),
                             ListTile(
-                              title: Text('削除'),
+                              title: const Text('削除'),
                               leading: Icon(Icons.delete),
                               onTap: () {
                                 // ボトムシートを非表示に

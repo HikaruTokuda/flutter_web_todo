@@ -35,6 +35,10 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                   title: Text(snapshot.data?.docs[index]['title']),
                   value: snapshot.data?.docs[index]['is_done'],
                   onChanged: (bool? value) {
+                    snapshot.data?.docs[index].reference.update({
+                      'is_done': value,
+                      'updated_time': Timestamp.now()
+                    });
                   },
                   secondary: IconButton(
                     icon: Icon(Icons.more_horiz),
@@ -62,7 +66,7 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                                               width: 500,
                                               child: TextField(
                                                 controller: editTitleController,
-                                                decoration: InputDecoration(
+                                                decoration: const InputDecoration(
                                                     border: OutlineInputBorder()
                                                 ),
                                               )
@@ -73,7 +77,12 @@ class _DoneTaskPageState extends State<DoneTaskPage> {
                                                 width: 200,
                                                 height: 30,
                                                 child: ElevatedButton(
-                                                    onPressed: (){
+                                                    onPressed: () async {
+                                                      await snapshot.data?.docs[index].reference.update(
+                                                          {
+                                                            'title': editTitleController.text
+                                                          });
+                                                      Navigator.pop(context);
                                                     },
                                                     child: Text('編集')
                                                 )
