@@ -9,91 +9,84 @@ class UndoneTaskPage extends StatefulWidget {
 
 class _UndoneTaskPageState extends State<UndoneTaskPage> {
   TextEditingController editTitleController = TextEditingController();
-
-  List<Task> undoneTaskList = [];
-  List<Task> doneTaskList = [];
-
-  Future<void> getUndoneTasks() async {
-    var collection = FirebaseFirestore.instance.collection('task');
-
-    var snapshot = await collection.where('is_done', isEqualTo: false).get();
-    snapshot.docs.forEach((task) {
-      Task undoneTask = Task(
-        title: task['title'],
-        isDone: task['is_done'],
-        createdTime: task['created_time'],
-      );
-      undoneTaskList.add(undoneTask);
-    });
-    setState(() {});
-  }
+  CollectionReference? tasks;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getUndoneTasks();
+    tasks = FirebaseFirestore.instance.collection('task');
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: undoneTaskList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            title: Text(undoneTaskList[index].title!),
-            value: undoneTaskList[index].isDone,
-            onChanged: (bool? value) {
-            },
-            secondary: IconButton(
-              icon: Icon(Icons.more_horiz),
-              onPressed: (){
-                // ボトムシートを表示
-                showModalBottomSheet(context: context, builder: (context) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,         // Column全体のサイズを要素ににあわせて小さくする
-                    children: [
-                      ListTile(
-                        title: Text('編集'),
-                        leading: Icon(Icons.edit),
-                        onTap: () {
-                        },
-                      ),
-                      ListTile(
-                        title: Text('削除'),
-                        leading: Icon(Icons.delete),
-                        onTap: () {
-                          // ボトムシートを非表示に
-                          Navigator.pop(context);
-                          // 確認用ダイアログの表示
-                          showDialog(context: context, builder: (context) {
-                            return AlertDialog(
-                              title: Text('${undoneTaskList[index].title}を削除しますか？'),
-                              actions: [    // アラートダイアログに設置するボタン
-                                TextButton(
-                                    onPressed: (){
-                                    },
-                                    child: Text('はい')
-                                ),
-                                TextButton(
-                                    onPressed: (){
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('キャンセル')
-                                )
-                              ],
-                            );
-                          });
-                        },
-                      )
-                    ],
-                  );
-                });
-              },
-            ),
+    return StreamBuilder<QuerySnapshot>(    // StreamBuilderはstreamに設定している値に変化があったときに再描画する
+      stream: tasks?.snapshots(),
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          return ListView.builder(
+              itemCount: snapshot.data?.docs.length,
+              itemBuilder: (BuildContext context, int index) {
+                if(snapshot.data?.docs[index]['is_done']) return Container();
+                return CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text(snapshot.data?.docs[index]['title']),
+                  value: snapshot.data?.docs[index]['is_done'],
+                  onChanged: (bool? value) {
+                  },
+                  secondary: IconButton(
+                    icon: Icon(Icons.more_horiz),
+                    onPressed: (){
+                      // ボトムシートを表示
+                      showModalBottomSheet(context: context, builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,         // Column全体のサイズを要素ににあわせて小さくする
+                          children: [
+                            ListTile(
+                              title: Text('編集'),
+                              leading: Icon(Icons.edit),
+                              onTap: () {
+                              },
+                            ),
+                            ListTile(
+                              title: Text('削除'),
+                              leading: Icon(Icons.delete),
+                              onTap: () {
+                                // ボトムシートを非表示に
+                                Navigator.pop(context);
+                                // 確認用ダイアログの表示
+                                showDialog(context: context, builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('${snapshot.data?.docs[index]['title']}を削除しますか？'),
+                                    actions: [    // アラートダイアログに設置するボタン
+                                      TextButton(
+                                          onPressed: (){
+                                          },
+                                          child: Text('はい')
+                                      ),
+                                      TextButton(
+                                          onPressed: (){
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('キャンセル')
+                                      )
+                                    ],
+                                  );
+                                });
+                              },
+                            )
+                          ],
+                        );
+                      });
+                    },
+                  ),
+                );
+              }
           );
+        } else {
+          return Container();
         }
+      }
     );
   }
 }
