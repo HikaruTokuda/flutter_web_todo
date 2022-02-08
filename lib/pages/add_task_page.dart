@@ -1,9 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web/models/task.dart';
 
 class AddTaskPage extends StatefulWidget {
-  final List<Task>? undoneTaskList;
-  const AddTaskPage({this.undoneTaskList});
 
   @override
   _AddTaskPageState createState() => _AddTaskPageState();
@@ -11,6 +10,17 @@ class AddTaskPage extends StatefulWidget {
 
 class _AddTaskPageState extends State<AddTaskPage> {
   TextEditingController titleController = TextEditingController();
+
+  Future<void> insertTask(String title) async {
+    var collection = FirebaseFirestore.instance.collection('task');
+    collection.add({
+      'title': title,
+      'is_done': false,
+      'created_time': Timestamp.now()
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,12 +49,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 width: 250,
                 height: 50,
                 child: ElevatedButton(
-                    onPressed: () {
-                      Task newTask = Task(
-                        title: titleController.text,
-                        isDone: false,
-                      );
-                      widget.undoneTaskList?.add(newTask);
+                    onPressed: () async {
+                      await insertTask(titleController.text);
                       Navigator.pop(context);
                     },
                     child: Text('追加')

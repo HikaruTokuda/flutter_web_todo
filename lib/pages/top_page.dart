@@ -14,8 +14,6 @@ class TopPage extends StatefulWidget {
 }
 
 class _TopPageState extends State<TopPage> {
-  List<Task> doneTaskList = [];
-  List<Task> undoneTaskList = [];
 
   bool showUndoneTaskPage = true;
 
@@ -73,7 +71,7 @@ class _TopPageState extends State<TopPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {       // pushの並列処理を待つ
-          await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTaskPage(undoneTaskList: undoneTaskList,)));
+          await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTaskPage()));
           setState(() {});
         },
         tooltip: 'Increment',
