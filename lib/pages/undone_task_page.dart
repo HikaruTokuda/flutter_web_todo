@@ -46,6 +46,41 @@ class _UndoneTaskPageState extends State<UndoneTaskPage> {
                               title: Text('編集'),
                               leading: Icon(Icons.edit),
                               onTap: () {
+                                // ボトムシートを非表示
+                                Navigator.pop(context);
+                                // 編集用ダイアログの表示
+                                showDialog(context: context, builder: (context) {
+                                  return SimpleDialog(
+                                    titlePadding: const EdgeInsets.all(20),
+                                    title: Container(
+                                      color: Colors.white,
+                                      child: Column(
+                                        children: [
+                                          const Text('タイトルを編集'),
+                                          SizedBox(
+                                              width: 500,
+                                              child: TextField(
+                                                controller: editTitleController,
+                                                decoration: const InputDecoration(
+                                                    border: OutlineInputBorder()
+                                                ),
+                                              )
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 30.0),
+                                            child: SizedBox(
+                                                width: 200,
+                                                height: 30,
+                                                child: ElevatedButton(
+                                                    child: const Text('編集')
+                                                )
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
                               },
                             ),
                             ListTile(
